@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VKU GPA Calculator</title>
+    <link rel="icon" type="image/png" href="https://daotao.vku.udn.vn/public/images/logo.png" /> 
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <button class="help-btn" onclick="showGuide()">
+          <i class="fas fa-question-circle"></i> Cẩm nang
+        </button>
+        <h1><i class="fas fa-graduation-cap"></i> VKU GPA Calculator </h1>
+        <div class="subtitle" id="learningQuote" onclick="changeQuote()">
+          "Học tập là một kho báu sẽ theo chủ nhân ở khắp nơi"
+        </div>
+      </div>
+      
+      <div class="content">
+        <h3><i class="fas fa-book"></i> Điểm các lớp học phần</h3>
+        <div class="table-container">
+          <table id="gradeTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tên lớp học phần</th>
+                <th>Số TC</th>
+                <th>Điểm CC / GVHD</th>
+                <th>Điểm Bài tập</th>
+                <th>Điểm Giữa kỳ</th>
+                <th>Điểm Cuối kỳ / Đồ án</th>
+                <th>Hệ số (VD: 1-2-2-5)</th>
+                <th>Điểm T10</th>
+                <th>Điểm chữ</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><input type="text" placeholder="Tên lớp học phần" value="Môn A" /></td>
+                <td><input type="number" min="0" value="3" /></td>
+                <td><input type="number" min="0" max="10" step="0.1" value="10" /></td>
+                <td><input type="number" min="0" max="10" step="0.1" value="10" /></td>
+                <td><input type="number" min="0" max="10" step="0.1" value="10" /></td>
+                <td><input type="number" min="0" max="10" step="0.1" value="10" /></td>
+                <td><input type="text" value="1-2-2-5" /></td>
+                <td class="score-cell t10">–</td>
+                <td class="score-cell letter">–</td>
+                <td><button class="delete-btn" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <button class="add-btn" onclick="addRow()">
+          <i class="fas fa-plus"></i> Thêm học phần
+        </button>
+        
+        <h3><i class="fas fa-chart-line"></i> Điểm tổng kết</h3>
+        <div class="gpa-summary">
+          <div class="gpa-grid">
+            <div class="gpa-item">
+              <div class="gpa-label">Số TC-ĐK</div>
+              <div class="gpa-value" id="totalCredits">0</div>
+            </div>
+            <div class="gpa-item">
+              <div class="gpa-label">Điểm 4</div>
+              <div class="gpa-value" id="gpa">0.0</div>
+            </div>
+            <div class="gpa-item">
+              <div class="gpa-label">Điểm 10</div>
+              <div class="gpa-value" id="totalT10">0.0</div>
+            </div>
+            <div class="gpa-item">
+              <div class="gpa-label">Xếp loại</div>
+              <div class="gpa-value" id="classification">...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-content">
+          <div class="footer-info">
+            <h4><i class="fas fa-code"></i> Thông tin tác giả</h4>
+            <p><i class="fas fa-user"></i> Được phát triển bởi <strong>CAM</strong></p>
+            <p><i class="fas fa-robot"></i> Với sự hỗ trợ của <strong>AI</strong></p>
+            <p><i class="fas fa-calendar"></i> Năm 2025</p>
+          </div>
+          <div class="footer-links">
+            <button class="footer-btn" onclick="showGuide()">
+              <i class="fas fa-book-open"></i> Hướng dẫn sử dụng
+            </button>
+            <button class="footer-btn" onclick="showAbout()">
+              <i class="fas fa-info-circle"></i> Giới thiệu
+            </button>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 - GPA Calculator. Tất cả quyền được bảo lưu. Made with <i class="fas fa-heart text-red"></i> by CAM & AI</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal hướng dẫn -->
+    <div id="guideModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-book-open"></i> Cẩm nang sử dụng</h2>
+          <span class="close" onclick="closeModal('guideModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="guide-section">
+            <h3><i class="fas fa-calculator"></i> Cách tính điểm</h3>
+            <div class="formula-box">
+              <p><strong>Điểm T10 = </strong>(CC×Hệ số 1 + BT×Hệ số 2 + GK×Hệ số 3 + CK×Hệ số 4) / Tổng hệ số</p>
+            </div>
+            <ul>
+              <li><strong>CC:</strong> Điểm chuyên cần / Giảng viên hướng dẫn</li>
+              <li><strong>BT:</strong> Điểm bài tập</li>
+              <li><strong>GK:</strong> Điểm giữa kỳ</li>
+              <li><strong>CK:</strong> Điểm cuối kỳ / Đồ án</li>
+            </ul>
+          </div>
+
+          <div class="guide-section">
+            <h3><i class="fas fa-list"></i> Bảng quy đổi điểm</h3>
+            <div class="grade-table">
+              <table>
+                <tr><th>Điểm T10</th><th>Điểm chữ</th><th>Điểm 4</th></tr>
+                <tr><td>8.5 - 10</td><td>A</td><td>4.0</td></tr>
+                <tr><td>7.0 - 8.4</td><td>B</td><td>3.0</td></tr>
+                <tr><td>5.5 - 6.9</td><td>C</td><td>2.0</td></tr>
+                <tr><td>4.0 - 5.4</td><td>D</td><td>1.0</td></tr>
+                <tr><td>Dưới 4.0</td><td>F</td><td>0    </td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="guide-section">
+            <h3><i class="fas fa-trophy"></i> Xếp loại học tập</h3>
+            <ul>
+              <li><strong>Xuất sắc:</strong> GPA ≥ 3.6</li>
+              <li><strong>Giỏi:</strong> 3.2 ≤ GPA < 3.6</li>
+              <li><strong>Khá:</strong> 2.5 ≤ GPA < 3.2</li>
+              <li><strong>Trung bình:</strong> 2.0 ≤ GPA < 2.5</li>
+              <li><strong>Yếu:</strong> 1.0 ≤ GPA < 2.0</li>
+              <li><strong>Kém:</strong> GPA < 1.0</li>
+            </ul>
+          </div>
+
+          <div class="guide-section">
+            <h3><i class="fas fa-lightbulb"></i> Hướng dẫn sử dụng</h3>
+            <ol>
+              <li>Nhập tên lớp học phần và số tín chỉ</li>
+              <li>Nhập điểm các thành phần (CC, BT, GK, CK)</li>
+              <li>Điều chỉnh hệ số nếu cần (Mặc định: 1-2-2-5, hoặc một số hệ số sau: 2-0-2-6, 3-0-0-7,1-0-0-9)</li>
+              <li>Hệ thống sẽ tự động tính điểm T10, điểm chữ và GPA</li>
+              <li>Sử dụng nút "Thêm học phần" để thêm môn mới</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal giới thiệu -->
+    <div id="aboutModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-info-circle"></i> Giới thiệu</h2>
+          <span class="close" onclick="closeModal('aboutModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="about-content">
+            <div class="about-item">
+              <i class="fas fa-graduation-cap"></i>
+              <h3>Công cụ tính GPA</h3>
+              <p>Ứng dụng web hỗ trợ sinh viên tính toán điểm trung bình học tập một cách nhanh chóng và chính xác.</p>
+            </div>
+            
+            <div class="about-item">
+              <i class="fas fa-features"></i>
+              <h3>Tính năng</h3>
+              <ul>
+                <li>Tính điểm T10 theo hệ số</li>
+                <li>Quy đổi điểm chữ và điểm 4</li>
+                <li>Tính GPA tổng</li>
+                <li>Xếp loại học tập</li>
+                <li>Giao diện thân thiện</li>
+              </ul>
+            </div>
+
+            <div class="about-item">
+              <i class="fas fa-heart"></i>
+              <h3>Mục đích</h3>
+              <p>Giúp sinh viên dễ dàng theo dõi kết quả học tập và lập kế hoạch cải thiện điểm số.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
